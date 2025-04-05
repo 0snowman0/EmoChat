@@ -1,0 +1,73 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ChatSystem", "ChatSystem", "{38C5F1F6-43A4-4CC5-B9DF-484960BA2719}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chatSystem_api", "chatSystem_api\chatSystem_api.csproj", "{D499CAF9-37CC-40FA-B2D9-6904B1B5D14D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSystem_Domain", "src\ChatSystem\ChatSystem_Domain\ChatSystem_Domain.csproj", "{4B7E2D65-4666-41A0-9D5F-01F50D881D99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSystem_Application", "src\ChatSystem\ChatSystem_Application\ChatSystem_Application.csproj", "{4DD2089A-63E8-4BAE-A332-52A43CBB2337}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSystem_persistence", "src\ChatSystem\ChatSystem_persistence\ChatSystem_persistence.csproj", "{285D1CD2-0880-42C6-A343-32054322DE0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSystem_EventBus", "src\ChatSystem\ChatSystem_EventBus\ChatSystem_EventBus.csproj", "{2EA6C254-D5D3-45F0-9BAC-4AE6AC14601C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatSystem_Contracts", "src\ChatSystem\ChatSystem_Contracts\ChatSystem_Contracts.csproj", "{B7D9D67F-298B-4DFA-8502-253B0E92F1BE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		rabbitMQ.txt = rabbitMQ.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D499CAF9-37CC-40FA-B2D9-6904B1B5D14D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D499CAF9-37CC-40FA-B2D9-6904B1B5D14D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D499CAF9-37CC-40FA-B2D9-6904B1B5D14D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D499CAF9-37CC-40FA-B2D9-6904B1B5D14D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B7E2D65-4666-41A0-9D5F-01F50D881D99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B7E2D65-4666-41A0-9D5F-01F50D881D99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B7E2D65-4666-41A0-9D5F-01F50D881D99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B7E2D65-4666-41A0-9D5F-01F50D881D99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DD2089A-63E8-4BAE-A332-52A43CBB2337}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DD2089A-63E8-4BAE-A332-52A43CBB2337}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DD2089A-63E8-4BAE-A332-52A43CBB2337}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DD2089A-63E8-4BAE-A332-52A43CBB2337}.Release|Any CPU.Build.0 = Release|Any CPU
+		{285D1CD2-0880-42C6-A343-32054322DE0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{285D1CD2-0880-42C6-A343-32054322DE0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{285D1CD2-0880-42C6-A343-32054322DE0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{285D1CD2-0880-42C6-A343-32054322DE0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EA6C254-D5D3-45F0-9BAC-4AE6AC14601C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EA6C254-D5D3-45F0-9BAC-4AE6AC14601C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EA6C254-D5D3-45F0-9BAC-4AE6AC14601C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EA6C254-D5D3-45F0-9BAC-4AE6AC14601C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7D9D67F-298B-4DFA-8502-253B0E92F1BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7D9D67F-298B-4DFA-8502-253B0E92F1BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7D9D67F-298B-4DFA-8502-253B0E92F1BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7D9D67F-298B-4DFA-8502-253B0E92F1BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{38C5F1F6-43A4-4CC5-B9DF-484960BA2719} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D499CAF9-37CC-40FA-B2D9-6904B1B5D14D} = {38C5F1F6-43A4-4CC5-B9DF-484960BA2719}
+		{4B7E2D65-4666-41A0-9D5F-01F50D881D99} = {38C5F1F6-43A4-4CC5-B9DF-484960BA2719}
+		{4DD2089A-63E8-4BAE-A332-52A43CBB2337} = {38C5F1F6-43A4-4CC5-B9DF-484960BA2719}
+		{285D1CD2-0880-42C6-A343-32054322DE0E} = {38C5F1F6-43A4-4CC5-B9DF-484960BA2719}
+		{2EA6C254-D5D3-45F0-9BAC-4AE6AC14601C} = {38C5F1F6-43A4-4CC5-B9DF-484960BA2719}
+		{B7D9D67F-298B-4DFA-8502-253B0E92F1BE} = {38C5F1F6-43A4-4CC5-B9DF-484960BA2719}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {13B82580-BB45-41AD-9A7D-61D5F3E38B70}
+	EndGlobalSection
+EndGlobal

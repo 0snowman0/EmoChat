@@ -1,0 +1,102 @@
+﻿	۲. استفاده از IEventBus در لایه Application
+حالا می‌توانید در سرویس‌های لایه Application (مثلاً MessageService) از IEventBus برای انتشار رویدادها استفاده کنید.
+
+مثال: ارسال پیام و انتشار Event
+در ChatSystem.Application، متد SendMessageAsync را به‌روزرسانی کنید:
+
+
+
+using ChatSystem.Contracts; // برای دسترسی به `Event`
+using ChatSystem_EventBus; // برای دسترسی به `IEventBus`
+
+public class MessageService
+{
+    private readonly IMessageRepository _messageRepository;
+    private readonly IEventBus _eventBus;
+
+    public MessageService(IMessageRepository messageRepository, IEventBus eventBus)
+    {
+        _messageRepository = messageRepository;
+        _eventBus = eventBus;
+    }
+
+    public async Task SendMessageAsync(string content, string sender)
+    {
+        // ۱. ذخیره پیام در دیتابیس Write
+        var message = new Message
+        {
+            Id = Guid.NewGuid(),
+            Content = content,
+            Sender = sender,
+            Timestamp = DateTime.UtcNow
+        };
+        await _messageRepository.AddAsync(message);
+
+        // ۲. انتشار Event برای همگام‌سازی با دیتابیس Read
+        await _eventBus.PublishAsync(new MessageSentEvent(
+            message.Id,
+            message.Content,
+            message.Sender
+        ));
+    }
+}
+
+
+
+
+۳. ایجاد Consumer در لایه Persistence (برای پردازش Eventها)
+در پروژه ChatSystem.Persistence، یک Consumer برای پردازش MessageSentEvent ایجاد کنید:
+
+
+using MassTransit;
+using ChatSystem.Contracts;
+
+public class MessageSentConsumer : IConsumer<MessageSentEvent>
+{
+    private readonly IMongoCollection<Message> _readMessages;
+
+    public MessageSentConsumer(IMongoDatabase readDatabase)
+    {
+        _readMessages = readDatabase.GetCollection<Message>("Messages");
+    }
+
+    public async Task Consume(ConsumeContext<MessageSentEvent> context)
+    {
+        var message = new Message
+        {
+            Id = context.Message.MessageId,
+            Content = context.Message.Content,
+            Sender = context.Message.Sender,
+            Timestamp = DateTime.UtcNow
+        };
+
+        await _readMessages.InsertOneAsync(message);
+    }
+}
+
+
+۴. ثبت Consumer در MassTransit (در Program.cs لایه Persistence)
+اگر ChatSystem.Persistence یک سرویس مستقل است، در Program.cs آن، Consumer را ثبت کنید:
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<MessageSentConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.ReceiveEndpoint("message-events", e =>
+        {
+            e.ConfigureConsumer<MessageSentConsumer>(context);
+        });
+    });
+});
+
+
+
+
