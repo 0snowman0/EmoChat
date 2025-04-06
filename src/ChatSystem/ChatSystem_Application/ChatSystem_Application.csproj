@@ -17,16 +17,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\Irepository\" />
-    <Folder Include="Dto\" />
+    <Folder Include="Dto\AAA\command\" />
+    <Folder Include="Dto\AAA\common\" />
+    <Folder Include="Dto\AAA\Queries\" />
     <Folder Include="Features\AAA\Handlers\Commands\" />
     <Folder Include="Features\AAA\Handlers\Queries\" />
     <Folder Include="Features\AAA\Requests\Commands\" />
     <Folder Include="Features\AAA\Requests\Queries\" />
-    <Folder Include="Map\" />
-    <Folder Include="Responses\" />
     <Folder Include="Validation\AAA\command\" />
     <Folder Include="Validation\AAA\common\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChatSystem_Domain\ChatSystem_Domain.csproj" />
   </ItemGroup>
 
 </Project>

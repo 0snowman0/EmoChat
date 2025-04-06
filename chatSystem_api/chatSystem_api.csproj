@@ -13,7 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\src\ChatSystem\ChatSystem_Application\ChatSystem_Application.csproj" />
     <ProjectReference Include="..\src\ChatSystem\ChatSystem_EventBus\ChatSystem_EventBus.csproj" />
+    <ProjectReference Include="..\src\ChatSystem\ChatSystem_persistence\ChatSystem_persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>

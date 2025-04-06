@@ -1,5 +1,7 @@
 using ChatSystem_EventBus.abstract_;
+using ChatSystem_persistence;
 using MassTransit;
+using ChatSystem_Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+#region Add Configure
+
+builder.Services.ConfigurePersistenceServices(builder.Configuration);
+
+builder.Services.ConfigureApplicationServices();
+
+#endregion
 #region RabbitMQ
 builder.Services.AddMassTransit(x =>
 {

@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using ChatSystem_Application.Contracts.IGenericRepository;
 using ChatSystem_persistence.Repositories;
+using ChatSystem_Application.Contracts.Irepository.message;
+using ChatSystem_persistence.Repositories.message;
 
 namespace ChatSystem_persistence
 {
@@ -16,11 +18,11 @@ namespace ChatSystem_persistence
         {
             #region MongoDb configuration
             /// <summary>
-        /// Configures MongoDB persistence services for dependency injection
-        /// </summary>
-        /// <param name="services">The IServiceCollection to add services to</param>
-        /// <param name="configuration">Application configuration</param>
-        /// <returns>The configured IServiceCollection</returns>
+            /// Configures MongoDB persistence services for dependency injection
+            /// </summary>
+            /// <param name="services">The IServiceCollection to add services to</param>
+            /// <param name="configuration">Application configuration</param>
+            /// <returns>The configured IServiceCollection</returns>
 
             // Load MongoDB settings from configuration
             var mongoDBSettings = new MongoDBSettings();
@@ -54,7 +56,10 @@ namespace ChatSystem_persistence
             });
             #endregion
 
+            #region repository
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<Imessage_rep, Message_rep>();
+            #endregion
 
             return services;
         }

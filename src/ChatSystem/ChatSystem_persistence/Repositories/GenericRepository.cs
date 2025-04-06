@@ -11,10 +11,10 @@ namespace ChatSystem_persistence.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly IMongoClient _mongoClient;
-        private readonly string _defaultWriteDbName;
-        private readonly string _defaultReadDbName;
-        private readonly string _collectionName;
+        protected readonly IMongoClient _mongoClient;
+        protected readonly string _defaultWriteDbName;
+        protected readonly string _defaultReadDbName;
+        protected readonly string _collectionName;
 
         public GenericRepository(
             IMongoClient mongoClient,
@@ -35,7 +35,7 @@ namespace ChatSystem_persistence.Repositories
                    typeof(T).Name.ToLower() + "s";
         }
 
-        private IMongoCollection<T> GetCollection(string databaseName)
+        public IMongoCollection<T> GetCollection(string databaseName)
         {
             return _mongoClient.GetDatabase(databaseName)
                 .GetCollection<T>(_collectionName);
