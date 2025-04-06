@@ -15,4 +15,9 @@
     <PackageReference Include="MongoDB.Driver" Version="3.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ChatSystem_Application\ChatSystem_Application.csproj" />
+    <ProjectReference Include="..\ChatSystem_Domain\ChatSystem_Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using ChatSystem_persistence.DataBaseConfig;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using ChatSystem_Application.Contracts.IGenericRepository;
+using ChatSystem_persistence.Repositories;
 
 namespace ChatSystem_persistence
 {
@@ -51,6 +53,8 @@ namespace ChatSystem_persistence
                 return client.GetDatabase(settings.ReadDatabase.DatabaseName);
             });
             #endregion
+
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             return services;
         }

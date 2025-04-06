@@ -6,4 +6,27 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+    <PackageReference Include="MediatR" Version="11.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Contracts\Irepository\" />
+    <Folder Include="Dto\" />
+    <Folder Include="Features\AAA\Handlers\Commands\" />
+    <Folder Include="Features\AAA\Handlers\Queries\" />
+    <Folder Include="Features\AAA\Requests\Commands\" />
+    <Folder Include="Features\AAA\Requests\Queries\" />
+    <Folder Include="Map\" />
+    <Folder Include="Responses\" />
+    <Folder Include="Validation\AAA\command\" />
+    <Folder Include="Validation\AAA\common\" />
+  </ItemGroup>
+
 </Project>
