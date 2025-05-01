@@ -20,6 +20,7 @@
     <Folder Include="Dto\AAA\command\" />
     <Folder Include="Dto\AAA\common\" />
     <Folder Include="Dto\AAA\Queries\" />
+    <Folder Include="Features\AAA\Event\" />
     <Folder Include="Features\AAA\Handlers\Commands\" />
     <Folder Include="Features\AAA\Handlers\Queries\" />
     <Folder Include="Features\AAA\Requests\Commands\" />
@@ -29,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Event-Driven\RabbitMQEventBus\RabbitMQEventBus.csproj" />
     <ProjectReference Include="..\ChatSystem_Domain\ChatSystem_Domain.csproj" />
   </ItemGroup>
 

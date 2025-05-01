@@ -28,6 +28,7 @@ namespace ChatSystem_Application.Features.message.Handlers.Queries
                 reciver:request.ReceiverID,
                 order:request.order
                 );
+
             if (!messages.Any())
             {
                 response.NotFound();
@@ -36,8 +37,8 @@ namespace ChatSystem_Application.Features.message.Handlers.Queries
             }
 
             //ToDo
-            response.Data = messages;
             response.Success();
+            response.Data = messages;
             return response;
         }
     }

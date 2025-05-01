@@ -1,0 +1,13 @@
+services:
+  analys.api:
+    image: ${DOCKER_REGISTRY-}analysapi
+    build:
+      context: .
+      dockerfile: src/AnalysEmoChat/Analys.api/Dockerfile
+
+  chatsystem_api:
+    image: ${DOCKER_REGISTRY-}chatsystemapi
+    build:
+      context: .
+      dockerfile: chatSystem_api/Dockerfile
+

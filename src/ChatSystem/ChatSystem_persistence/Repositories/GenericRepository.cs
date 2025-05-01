@@ -2,6 +2,8 @@
 using ChatSystem_Domain.attribute;
 using ChatSystem_persistence.DataBaseConfig;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq.Expressions;
@@ -71,11 +73,10 @@ namespace ChatSystem_persistence.Repositories
         // ======== Overloads with Database Name Parameter ========
         public async Task<T> GetByIdAsync(string id, string databaseName)
         {
-            var filter = Builders<T>.Filter.Eq("_id", id);
-            return await GetCollection(databaseName)
-                .Find(filter)
-                .FirstOrDefaultAsync();
+            var filter = BuildIdFilter(id);
+            return await GetCollection(databaseName).Find(filter).FirstOrDefaultAsync();
         }
+
 
         public async Task<IEnumerable<T>> GetAllAsync(
             string databaseName,
@@ -119,27 +120,55 @@ namespace ChatSystem_persistence.Repositories
         public async Task UpdateAsync(T entity, string databaseName)
         {
             var id = typeof(T).GetProperty("Id")?.GetValue(entity)?.ToString();
-            var filter = Builders<T>.Filter.Eq("_id", id);
+            var filter = BuildIdFilter(id);
 
-            await GetCollection(databaseName)
-                .ReplaceOneAsync(filter, entity);
+            await GetCollection(databaseName).ReplaceOneAsync(filter, entity);
         }
+
 
         public async Task DeleteByIdAsync(string id, string databaseName)
         {
-            var filter = Builders<T>.Filter.Eq("_id", id);
-            await GetCollection(databaseName)
-                .DeleteOneAsync(filter);
+            var filter = BuildIdFilter(id);
+            await GetCollection(databaseName).DeleteOneAsync(filter);
         }
 
-        public async Task DeleteByIdsAsync(
-            IEnumerable<string> ids,
-            string databaseName)
+
+        public async Task DeleteByIdsAsync(IEnumerable<string> ids, string databaseName)
         {
-            var filter = Builders<T>.Filter.In("_id", ids);
-            await GetCollection(databaseName)
-                .DeleteManyAsync(filter);
+            var idProperty = typeof(T).GetProperty("Id");
+            var bsonIdAttr = idProperty?.GetCustomAttribute<BsonRepresentationAttribute>();
+
+            FilterDefinition<T> filter;
+
+            if (bsonIdAttr != null && bsonIdAttr.Representation == BsonType.ObjectId)
+            {
+                var objectIds = ids.Select(x => new ObjectId(x));
+                filter = Builders<T>.Filter.In("_id", objectIds);
+            }
+            else
+            {
+                filter = Builders<T>.Filter.In("_id", ids);
+            }
+
+            await GetCollection(databaseName).DeleteManyAsync(filter);
         }
+
+
+
+        //private function 
+        private FilterDefinition<T> BuildIdFilter(string id)
+        {
+            var idProperty = typeof(T).GetProperty("Id");
+            var bsonIdAttr = idProperty?.GetCustomAttribute<BsonRepresentationAttribute>();
+
+            if (bsonIdAttr != null && bsonIdAttr.Representation == BsonType.ObjectId)
+            {
+                return Builders<T>.Filter.Eq("_id", new ObjectId(id));
+            }
+
+            return Builders<T>.Filter.Eq("_id", id);
+        }
+
 
     }
 }

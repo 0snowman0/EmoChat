@@ -1,0 +1,6 @@
+@Analys.api_HostAddress = http://localhost:5181
+
+GET {{Analys.api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

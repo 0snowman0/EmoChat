@@ -1,12 +1,11 @@
-﻿using MongoDB.Driver;
-using Microsoft.Extensions.DependencyInjection;
-using ChatSystem_persistence.DataBaseConfig;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using ChatSystem_Application.Contracts.IGenericRepository;
-using ChatSystem_persistence.Repositories;
+﻿using ChatSystem_Application.Contracts.IGenericRepository;
 using ChatSystem_Application.Contracts.Irepository.message;
+using ChatSystem_persistence.DataBaseConfig;
+using ChatSystem_persistence.Repositories;
 using ChatSystem_persistence.Repositories.message;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 
 namespace ChatSystem_persistence
 {
