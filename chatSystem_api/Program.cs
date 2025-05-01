@@ -20,6 +20,7 @@ builder.Services.ConfigurePersistenceServices(builder.Configuration);
 builder.Services.ConfigureApplicationServices();
 
 #endregion
+
 #region RabbitMQ
 builder.Services.AddMassTransit(x =>
 {

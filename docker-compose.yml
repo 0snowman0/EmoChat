@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   analys.api:
     image: ${DOCKER_REGISTRY-}analysapi
@@ -5,9 +7,53 @@ services:
       context: .
       dockerfile: src/AnalysEmoChat/Analys.api/Dockerfile
 
-  chatsystem_api:
+  chatsystem.api:
     image: ${DOCKER_REGISTRY-}chatsystemapi
     build:
       context: .
       dockerfile: chatSystem_api/Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      
+      # MongoDB write DB
+      - MongoDBSettings__WriteDatabase__ConnectionString=mongodb://mongo1:27017
+      - MongoDBSettings__WriteDatabase__DatabaseName=ChatSystem_WriteDB
+      
+      # MongoDB read DB
+      - MongoDBSettings__ReadDatabase__ConnectionString=mongodb://mongo2:27017
+      - MongoDBSettings__ReadDatabase__DatabaseName=ChatSystem_ReadDB
 
+      # RabbitMQ
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Username=guest
+      - RabbitMQ__Password=guest
+      - RabbitMQ__QueueName=chat-messages
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  mongo1:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo1_data:/data/db
+
+  mongo2:
+    image: mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo2_data:/data/db
+
+volumes:
+  mongo1_data:
+  mongo2_data:
