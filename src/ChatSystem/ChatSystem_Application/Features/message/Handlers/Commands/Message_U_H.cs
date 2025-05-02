@@ -50,7 +50,7 @@ namespace ChatSystem_Application.Features.message.Handlers.Commands
             catch(Exception ex)
             {
                 response.ServerError();
-                response.Errors = new List<string>() {ex.ToString() };
+                response.Errors = new List<string>() {ex.Message };
             }
             return response;
         }

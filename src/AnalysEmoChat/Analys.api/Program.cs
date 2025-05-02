@@ -1,15 +1,16 @@
-﻿using StackExchange.Redis;
-using Microsoft.Extensions.Configuration;
-using Analys.api.config.settings;
-using Analys.api.config.database;
-using Microsoft.EntityFrameworkCore;
-using Analys.api.contracts.Repository.redis;
-using Analys.api.Implenemetation.Repository.redis;
-using Analys.api.contracts.Repository.mysql;
-using Analys.api.Implenemetation.Repository.mysql;
+﻿using Analys.api.config.database;
 using Analys.api.contracts.BackgroundService;
+using Analys.api.contracts.Repository.mysql;
+using Analys.api.contracts.Repository.mysql.UserEmojiUsage;
+using Analys.api.contracts.Repository.redis;
 using Analys.api.Implenemetation.BackgroundService;
-using System.Threading.Tasks;
+using Analys.api.Implenemetation.Repository.mysql;
+using Analys.api.Implenemetation.Repository.mysql.UserEmojiUsage;
+using Analys.api.Implenemetation.Repository.redis;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
+using System.Reflection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,26 +23,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-#region Background service
-builder.Services.AddSingleton<IScheduledTask, MyTask>();
-builder.Services.AddHostedService(provider =>
-    new TimedBackgroundService(
-        provider.GetRequiredService<IScheduledTask>(),
-        intervalMinutes: 1  
-    ));
-#endregion
 
-#region redis
-// ========== تنظیمات Redis از appsettings.json ==========
-builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("RedisSettings"));
-var redisSettings = builder.Configuration.GetSection("RedisSettings").Get<RedisSettings>();
-
-// ========== اتصال به Redis ==========
-builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
-    ConnectionMultiplexer.Connect(redisSettings.ConnectionString));
-#endregion
-
-#region MySql
+#region My Sql
 
 var connectionString = builder.Configuration.GetSection("MySQL")["Connection"];
 
@@ -51,12 +34,50 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 #endregion
 
+#region Background service
+builder.Services.AddSingleton<IScheduledTask, TransferRedisEmojiToMySqlTask>();
+builder.Services.AddHostedService(provider =>
+    new TimedBackgroundService(
+        provider.GetRequiredService<IScheduledTask>(),
+        intervalMinutes: 1
+    ));
+#endregion
+
+#region redis
+
+builder.Services.AddSingleton<ConnectionMultiplexer>(sp =>
+    ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("redis")));
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("redis");
+    options.InstanceName = "EmoChat_";
+});
+
+#endregion
+
+
 #region DI
 
 builder.Services.AddScoped(typeof(IRedisRepository<>), typeof(RedisRepository<>));
 builder.Services.AddScoped(typeof(IMySqlRepository<>), typeof(MySqlRepository<>));
 
+builder.Services.AddScoped<IRedisUserEmoji , RedisUserEmoji>();
+builder.Services.AddScoped<IUserEmojiUsage_Rep , UserEmojiUsage_Rep>();
+
+
+
+
 #endregion
+
+#region MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+#endregion
+
+#region Auto Mapper
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+#endregion
+
 
 
 var app = builder.Build();
