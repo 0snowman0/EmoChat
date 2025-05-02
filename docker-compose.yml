@@ -1,59 +1,103 @@
-version: "3.8"
+﻿version: "3.8"
 
 services:
-  analys.api:
-    image: ${DOCKER_REGISTRY-}analysapi
+  # ──────────────────────────────
+  # API های اصلی
+  # ──────────────────────────────
+  analys.api:                    # سرویس تحلیل
+    image: ${DOCKER_REGISTRY:-}analysapi
     build:
       context: .
       dockerfile: src/AnalysEmoChat/Analys.api/Dockerfile
+    depends_on:
+      - redis
+      - mysql
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
 
-  chatsystem.api:
-    image: ${DOCKER_REGISTRY-}chatsystemapi
+      # اتصال به Redis (داخل شبکهٔ Compose)
+      Redis__Connection: redis:6379
+
+      # اتصال به MySQL
+      MySQL__Connection: Server=mysql;Port=3306;Database=analysdb;User=analys;Password=MyStrongPass!
+    restart: unless-stopped
+
+  chatsystem_api:                # سرویس چت
+    image: ${DOCKER_REGISTRY:-}chatsystemapi
     build:
       context: .
       dockerfile: chatSystem_api/Dockerfile
     ports:
       - "8081:8080"
+    depends_on:
+      - mongo1
+      - mongo2
+      - rabbitmq
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      
-      # MongoDB write DB
-      - MongoDBSettings__WriteDatabase__ConnectionString=mongodb://mongo1:27017
-      - MongoDBSettings__WriteDatabase__DatabaseName=ChatSystem_WriteDB
-      
-      # MongoDB read DB
-      - MongoDBSettings__ReadDatabase__ConnectionString=mongodb://mongo2:27017
-      - MongoDBSettings__ReadDatabase__DatabaseName=ChatSystem_ReadDB
+      ASPNETCORE_ENVIRONMENT: Development
+      MongoDBSettings__WriteDatabase__ConnectionString: mongodb://mongo1:27017
+      MongoDBSettings__WriteDatabase__DatabaseName: ChatSystem_WriteDB
+      MongoDBSettings__ReadDatabase__ConnectionString: mongodb://mongo2:27017
+      MongoDBSettings__ReadDatabase__DatabaseName: ChatSystem_ReadDB
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Username: guest
+      RabbitMQ__Password: guest
+      RabbitMQ__QueueName: chat-messages
+    restart: unless-stopped
 
-      # RabbitMQ
-      - RabbitMQ__Host=rabbitmq
-      - RabbitMQ__Username=guest
-      - RabbitMQ__Password=guest
-      - RabbitMQ__QueueName=chat-messages
+  # ──────────────────────────────
+  # پایگاه‌های داده و کش
+  # ──────────────────────────────
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"                # اگر روی میزبان اشغال است، تغییر بده
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data           # فایل AOF/RDB روی دیسک میزبان ذخیره می‌شود
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8
+    ports:
+      - "3307:3306"                # پورت میزبان 3307 ⇒ کانتینر 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: MyStrongRootPass!
+      MYSQL_DATABASE: analysdb
+      MYSQL_USER: analys
+      MYSQL_PASSWORD: MyStrongPass!
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+  mongo1:
+    image: mongo:7.0.5
+    ports:
+      - "27019:27017"              # میزبان 27019 ⇒ کانتینر 27017
+    volumes:
+      - mongo1_data:/data/db
+    restart: unless-stopped
+
+  mongo2:
+    image: mongo:7.0.5
+    ports:
+      - "27020:27017"
+    volumes:
+      - mongo2_data:/data/db
+    restart: unless-stopped
 
   rabbitmq:
     image: rabbitmq:3-management
     ports:
       - "5672:5672"
       - "15672:15672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+    restart: unless-stopped
 
-  mongo1:
-    image: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo1_data:/data/db
-
-  mongo2:
-    image: mongo
-    ports:
-      - "27018:27017"
-    volumes:
-      - mongo2_data:/data/db
-
+# ──────────────────────────────
+# ولوم‌های پایدار
+# ──────────────────────────────
 volumes:
   mongo1_data:
   mongo2_data:
+  mysql_data:
+  redis_data:

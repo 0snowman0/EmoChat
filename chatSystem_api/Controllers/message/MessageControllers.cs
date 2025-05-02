@@ -1,5 +1,4 @@
 ﻿using ChatSystem_Application.Dto.Message.command;
-using ChatSystem_Application.Dto.Message.common;
 using ChatSystem_Application.Features.message.Requests.Commands;
 using ChatSystem_Application.Features.message.Requests.Queries;
 using MediatR;

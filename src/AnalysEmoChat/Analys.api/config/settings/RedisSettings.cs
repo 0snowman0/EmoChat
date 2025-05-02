@@ -1,4 +1,4 @@
-﻿namespace Analys.api.model.settings
+﻿namespace Analys.api.config.settings
 {
     public class RedisSettings
     {

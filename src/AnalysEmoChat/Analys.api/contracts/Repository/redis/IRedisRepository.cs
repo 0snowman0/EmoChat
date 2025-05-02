@@ -1,4 +1,4 @@
-﻿namespace Analys.api.contracts.Repository
+﻿namespace Analys.api.contracts.Repository.redis
 {
     public interface IRedisRepository<T> where T : class
     {

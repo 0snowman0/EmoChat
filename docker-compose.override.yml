@@ -1,7 +1,17 @@
+﻿version: "3.8"           # خط نسخه اجباری نیست، اما برای صراحت گذاشته شده
+
 services:
   analys.api:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080 
     ports:
-      - "8080"
+      - "8080"         
+
+  mongo1:
+    ports:
+      - "27019:27017"  
+
+  mongo2:
+    ports:
+      - "27020:27017"

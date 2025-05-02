@@ -1,10 +1,10 @@
-﻿using Analys.api.contracts.Repository;
-using Analys.api.model.settings;
+﻿using Analys.api.config.settings;
+using Analys.api.contracts.Repository.redis;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System.Text.Json;
 
-namespace Analys.api.Implenemetation
+namespace Analys.api.Implenemetation.Repository.redis
 {
     public class RedisRepository<T> : IRedisRepository<T> where T : class
     {
@@ -45,14 +45,14 @@ namespace Analys.api.Implenemetation
 
         public async Task SetInHashAsync(string hashKey, string field, T value)
         {
-            var serializedValue = System.Text.Json.JsonSerializer.Serialize(value);
+            var serializedValue = JsonSerializer.Serialize(value);
             await _redisDb.HashSetAsync(GetKey(hashKey), field, serializedValue);
         }
 
         public async Task<T> GetFromHashAsync(string hashKey, string field)
         {
             var value = await _redisDb.HashGetAsync(GetKey(hashKey), field);
-            return value.IsNull ? null : System.Text.Json.JsonSerializer.Deserialize<T>(value);
+            return value.IsNull ? null : JsonSerializer.Deserialize<T>(value);
         }
     }
 }
