@@ -1,14 +1,15 @@
 ﻿using Analys.api.config.database;
+using Analys.api.contracts.AnalysUtilies;
 using Analys.api.contracts.BackgroundService;
 using Analys.api.contracts.Repository.mysql;
 using Analys.api.contracts.Repository.mysql.UserEmojiUsage;
 using Analys.api.contracts.Repository.redis;
+using Analys.api.Implenemetation.AnalysUtilies;
 using Analys.api.Implenemetation.BackgroundService;
 using Analys.api.Implenemetation.Repository.mysql;
 using Analys.api.Implenemetation.Repository.mysql.UserEmojiUsage;
 using Analys.api.Implenemetation.Repository.redis;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 using System.Reflection;
 
@@ -35,37 +36,42 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 #endregion
 
 #region Background service
-builder.Services.AddSingleton<IScheduledTask, TransferRedisEmojiToMySqlTask>();
-builder.Services.AddHostedService(provider =>
-    new TimedBackgroundService(
-        provider.GetRequiredService<IScheduledTask>(),
-        intervalMinutes: 1
-    ));
+builder.Services.AddScoped<IScheduledTask, TransferRedisEmojiToMySqlTask>();
+
+//builder.Services.AddHostedService(provider =>
+//    new TimedBackgroundService(
+//        provider,
+//        intervalMinutes: 1
+//    ));
+
 #endregion
 
 #region redis
 
+var redisConnection = builder.Configuration["Redis:Connection"];
+
 builder.Services.AddSingleton<ConnectionMultiplexer>(sp =>
-    ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("redis")));
+    ConnectionMultiplexer.Connect(redisConnection));
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = builder.Configuration.GetConnectionString("redis");
+    options.Configuration = redisConnection;
     options.InstanceName = "EmoChat_";
 });
 
-#endregion
 
+#endregion
 
 #region DI
 
+//generic
 builder.Services.AddScoped(typeof(IRedisRepository<>), typeof(RedisRepository<>));
 builder.Services.AddScoped(typeof(IMySqlRepository<>), typeof(MySqlRepository<>));
 
 builder.Services.AddScoped<IRedisUserEmoji , RedisUserEmoji>();
 builder.Services.AddScoped<IUserEmojiUsage_Rep , UserEmojiUsage_Rep>();
 
-
+builder.Services.AddScoped<IAnalysisProcessor , AnalysisProcessor>();
 
 
 #endregion

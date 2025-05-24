@@ -1,6 +1,8 @@
 ﻿using Analys.api.contracts.Repository.redis;
 using Analys.api.Dto.UserEmo;
 using StackExchange.Redis;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Analys.api.Implenemetation.Repository.redis
 {
@@ -85,12 +87,22 @@ namespace Analys.api.Implenemetation.Repository.redis
             await _database.KeyExpireAsync(GetKey(userId), expiration);
         }
 
+
         public IEnumerable<string> ExtractEmojis(string input)
         {
-            return input
-                .Where(char.IsSurrogate)
-                .Select(c => c.ToString());
+            var emojis = new List<string>();
+
+            var enumerator = StringInfo.GetTextElementEnumerator(input);
+            while (enumerator.MoveNext())
+            {
+                var element = enumerator.GetTextElement();
+                if (element.Any(char.IsSurrogate)) // یا یک شرط قوی‌تر برای شناسایی ایموجی می‌خوای بذار
+                    emojis.Add(element);
+            }
+
+            return emojis;
         }
+
     }
 
 }

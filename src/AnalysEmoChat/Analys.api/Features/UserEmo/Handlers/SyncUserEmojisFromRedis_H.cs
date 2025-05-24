@@ -49,6 +49,7 @@ namespace Analys.api.Features.UserEmo.Handlers
                     response.ServerError();
                     response.Message = mysqlResponse.Message;
                     response.Errors = mysqlResponse.Errors;
+                    response.Data = mysqlResponse.Data;
                 }
             }
             catch (Exception ex)

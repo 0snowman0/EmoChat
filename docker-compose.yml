@@ -4,7 +4,7 @@ services:
   # ──────────────────────────────
   # API های اصلی
   # ──────────────────────────────
-  analys.api:                    # سرویس تحلیل
+  analys.api:                 
     image: ${DOCKER_REGISTRY:-}analysapi
     build:
       context: .
@@ -15,14 +15,12 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
 
-      # اتصال به Redis (داخل شبکهٔ Compose)
       Redis__Connection: redis:6379
 
-      # اتصال به MySQL
       MySQL__Connection: Server=mysql;Port=3306;Database=analysdb;User=analys;Password=MyStrongPass!
     restart: unless-stopped
 
-  chatsystem_api:                # سرویس چت
+  chatsystem_api:                
     image: ${DOCKER_REGISTRY:-}chatsystemapi
     build:
       context: .
@@ -51,16 +49,16 @@ services:
   redis:
     image: redis:7
     ports:
-      - "6379:6379"                # اگر روی میزبان اشغال است، تغییر بده
+      - "6379:6379"                
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
-      - redis_data:/data           # فایل AOF/RDB روی دیسک میزبان ذخیره می‌شود
+      - redis_data:/data           
     restart: unless-stopped
 
   mysql:
     image: mysql:8
     ports:
-      - "3307:3306"                # پورت میزبان 3307 ⇒ کانتینر 3306
+      - "3307:3306"                
     environment:
       MYSQL_ROOT_PASSWORD: MyStrongRootPass!
       MYSQL_DATABASE: analysdb
@@ -73,7 +71,7 @@ services:
   mongo1:
     image: mongo:7.0.5
     ports:
-      - "27019:27017"              # میزبان 27019 ⇒ کانتینر 27017
+      - "27019:27017"              
     volumes:
       - mongo1_data:/data/db
     restart: unless-stopped

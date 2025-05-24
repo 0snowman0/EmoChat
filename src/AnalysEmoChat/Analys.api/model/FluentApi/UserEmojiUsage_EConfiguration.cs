@@ -19,9 +19,5 @@ public class UserEmojiUsage_EConfiguration : IEntityTypeConfiguration<UserEmojiU
         entity.Property(e => e.LastUpdated)
               .HasColumnType("TIMESTAMP")
               .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-
-
-        entity.HasIndex(e => new { e.UserId, e.Emoji }).IsUnique();
     }
 }

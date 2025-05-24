@@ -5,12 +5,12 @@ namespace Analys.api.Implenemetation.BackgroundService
 {
     public class TimedBackgroundService : Microsoft.Extensions.Hosting.BackgroundService
     {
-        private readonly IScheduledTask _task;
+        private readonly IServiceProvider _serviceProvider;
         private readonly int _intervalMinutes;
 
-        public TimedBackgroundService(IScheduledTask task, int intervalMinutes)
+        public TimedBackgroundService(IServiceProvider serviceProvider, int intervalMinutes)
         {
-            _task = task;
+            _serviceProvider = serviceProvider;
             _intervalMinutes = intervalMinutes;
         }
 
@@ -18,9 +18,12 @@ namespace Analys.api.Implenemetation.BackgroundService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
+                using var scope = _serviceProvider.CreateScope();
+                var task = scope.ServiceProvider.GetRequiredService<IScheduledTask>();
+
                 try
                 {
-                    await _task.ExecuteAsync(stoppingToken);
+                    await task.ExecuteAsync(stoppingToken);
                 }
                 catch (Exception ex)
                 {
@@ -31,4 +34,5 @@ namespace Analys.api.Implenemetation.BackgroundService
             }
         }
     }
+
 }

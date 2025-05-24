@@ -1,5 +1,6 @@
 ﻿using Analys.api.contracts.Repository.mysql.UserEmojiUsage;
 using Analys.api.Features.UserEmo.Requests;
+using Analys.api.Implenemetation.Repository.mysql.UserEmojiUsage;
 using Analys.api.model.user;
 using AutoMapper;
 using ChatSystem_Application.Responses;
@@ -23,17 +24,29 @@ namespace Analys.api.Features.UserEmo.Handlers
             {
                 var userEmojiUsage_Es = _mapper.Map<List<UserEmojiUsage_E>>(request.UserEmojiUsageInRedis);
 
-                await _userEmojiUsage_Rep.AddRangeAsync(userEmojiUsage_Es);
-                await _userEmojiUsage_Rep.SaveAsync();
+                foreach (var ue in userEmojiUsage_Es)
+                {
+                    var target = await _userEmojiUsage_Rep.GetBy_emoji_userId(emoji: ue.Emoji, user_id: ue.UserId);
 
-                response.Success();
+                    if (target is not null)
+                    {
+                        target.Count += ue.Count;
+                        await _userEmojiUsage_Rep.SaveAsync();
+                    }
+
+                    else await _userEmojiUsage_Rep.AddAsync(ue);
+                    await _userEmojiUsage_Rep.SaveAsync();
+                }
+
+
+                response.Success(data: userEmojiUsage_Es);
                 response.Message = $"{userEmojiUsage_Es.Count} records inserted successfully.";
 
             }
             catch (Exception ex)
             {
                 response.ServerError();
-                response.Errors = new List<string> { ex.Message};
+                response.Errors = new List<string> { ex.Message, ex.InnerException?.Message };
             }
 
             return response;
